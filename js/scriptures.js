@@ -3,13 +3,19 @@
 
 const Scriptures = (function () {
     "use strict";
-    //CONSTANTS ---------------------------------------------------
+    // ------------------------------------------------------------------------------------------------------
+    //                                      CONSTANTS
+    //
 
-    //PRIVATE VARIABLES -------------------------------------------------
+    //------------------------------------------------------------------------------------------------------
+    //                              PRIVATE VARIABLES
+    //
     let books = {};
     let volumes = [];
 
-    //PRIVATE METHOD DECLARATIONS -----------------------------------------
+    //------------------------------------------------------------------------------------------------------
+    //                  PRIVATE METHOD DECLARATIONS
+    //
     let ajax;
     let bookChapterValid;
     let cacheBooks;
@@ -19,8 +25,9 @@ const Scriptures = (function () {
     let navigateHome;
     let onHashChanged;
 
-
-    //PRIVATE METHODS ---------------------------------------------------
+    //------------------------------------------------------------------------------------------------------
+    //                              PRIVATE METHODS
+    //
     ajax = function (url, successCallback, failureCallback) {
         let request = new XMLHttpRequest();
         request.open("GET", url, true);
@@ -159,8 +166,9 @@ const Scriptures = (function () {
         }
     };
 
-
-    //PUBLIC API ---------------------------------------------------
+    //------------------------------------------------------------------------------------------------------
+    //                                      PUBLIC API
+    //
     return {
         init(callback) {
             init(callback);
