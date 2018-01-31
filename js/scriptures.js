@@ -12,8 +12,9 @@ const Scriptures = (function () {
     //PRIVATE METHOD DECLARATIONS -----------------------------------------
     let ajax;
     let cacheBooks;
-    let navigateHome;
     let init;
+    let navigateHome;
+    let onHashChanged;
 
 
     //PRIVATE METHODS ---------------------------------------------------
@@ -55,12 +56,6 @@ const Scriptures = (function () {
         }
     };
 
-    navigateHome = function () {
-        let html = "<div>The Old Testament</div><div>The New Testament</div><div>The Book of Mormon</div>";
-
-        document.getElementById("scriptures").innerHTML = html;
-    };
-
     init = function (callback) {
         let booksLoaded = false;
         let volumesLoaded = false;
@@ -87,17 +82,43 @@ const Scriptures = (function () {
                 }
             }
         );
+    };
 
-        function onHashChanged() {
-            let ids = [];
-            if (location.hash !== "" && location.hash.length > 1) {
-                ids = location.hash.substring(1).split(":");
-            }
-            if (ids.length <= 0) {
+    navigateHome = function (volumeId) {
+        //NEEDSWORK: if volumenID is set, display just that volume
+        let html = "<div>The Old Testament</div>"
+                    + "<div>The New Testament</div>"
+                    + "<div>The Book of Mormon</div>"
+                    + "<div>Doctrine and Covenants</div>"
+                    + "<div>The Pearl of Great Price</div>"
+                    + "<div>Selected volume: " + volumeId + "</div>";
+
+        document.getElementById("scriptures").innerHTML = html;
+    };
+
+    onHashChanged = function () {
+        let ids = [];
+        let volumeId;
+
+        if (location.hash !== "" && location.hash.length > 1) {
+            // Remove leading # and split the string on colon delimiters
+            ids = location.hash.substring(1).split(":");
+        }
+        if (ids.length <= 0) {
+            navigateHome();
+        } else if (ids.length === 1){
+            volumeId = Number(ids[0]);
+
+            if (volumeId < volumes[0].id || volumeId > volumes[volumes.length - 1].id) {
                 navigateHome();
             } else {
-                console.log("else");
+                navigateHome(volumeId)
             }
+        } else if (ids.length === 2) {
+            // NEEDSWORK: display books list of chapters
+        }
+        else {
+            //display chapter contents
         }
     };
 
@@ -106,6 +127,9 @@ const Scriptures = (function () {
     return {
         init(callback) {
             init(callback);
-        }
+        },
+        onHashChanged(eventHandler) {
+            onHashChanged(eventHandler);
+        },
     };
 }());
