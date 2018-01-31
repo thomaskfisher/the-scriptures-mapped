@@ -20,6 +20,7 @@
                 }
             }
             ready(function() {
+                window.addEventListener("hashchange", Scriptures.onHashChanged);
                 Scriptures.init(Scriptures.onHashChanged);
             });
         </script>

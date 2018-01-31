@@ -11,8 +11,11 @@ const Scriptures = (function () {
 
     //PRIVATE METHOD DECLARATIONS -----------------------------------------
     let ajax;
+    let bookChapterValid;
     let cacheBooks;
     let init;
+    let navigateBook;
+    let navigateChapter;
     let navigateHome;
     let onHashChanged;
 
@@ -38,6 +41,20 @@ const Scriptures = (function () {
         request.onerror = failureCallback;
         request.send();
     };
+
+    bookChapterValid = function (bookId, chapter) {
+        let book = books[bookId];
+
+        if (book === undefined || chapter < 0 || chapter > book.numChapters) {
+            return false;
+        }
+
+        if (chapter === 0 && book.numChapters > 0) {
+            return false;
+        }
+
+        return true;
+    }
 
     cacheBooks = function (callback) {
         volumes.forEach(function (volume) {
@@ -84,6 +101,14 @@ const Scriptures = (function () {
         );
     };
 
+    navigateBook = function (bookId) {
+        document.getElementById("scriptures").innerHTML = "<div>" + bookId + "</div>";
+    };
+
+    navigateChapter = function (bookId, chapter) {
+        document.getElementById("scriptures").innerHTML = "<div>" + bookId + ", " + chapter + "</div>";
+    };
+
     navigateHome = function (volumeId) {
         //NEEDSWORK: if volumenID is set, display just that volume
         let html = "<div>The Old Testament</div>"
@@ -97,6 +122,8 @@ const Scriptures = (function () {
     };
 
     onHashChanged = function () {
+        let bookId;
+        let chapter;
         let ids = [];
         let volumeId;
 
@@ -107,6 +134,7 @@ const Scriptures = (function () {
         if (ids.length <= 0) {
             navigateHome();
         } else if (ids.length === 1){
+            //Display single volume's table of contents
             volumeId = Number(ids[0]);
 
             if (volumeId < volumes[0].id || volumeId > volumes[volumes.length - 1].id) {
@@ -115,10 +143,25 @@ const Scriptures = (function () {
                 navigateHome(volumeId)
             }
         } else if (ids.length === 2) {
-            // NEEDSWORK: display books list of chapters
+            // NEEDSWORK: display book's list of chapters
+            bookId = Number(ids[1]);
+
+            if (books[bookId] === undefined) {
+                navigateHome();
+            } else {
+                navigateBook(bookId);
+            }
         }
         else {
             //display chapter contents
+            bookId = Number(ids[1]);
+            chapter = Number(ids[2]);
+
+            if (!bookChapterValid(bookId, chapter)) {
+                navigateHome();
+            } else {
+                navigateChapter(bookId, chapter);
+            }
         }
     };
 
