@@ -54,7 +54,7 @@ const Scriptures = (function () {
         }
 
         return true;
-    }
+    };
 
     cacheBooks = function (callback) {
         volumes.forEach(function (volume) {
@@ -111,12 +111,7 @@ const Scriptures = (function () {
 
     navigateHome = function (volumeId) {
         //NEEDSWORK: if volumenID is set, display just that volume
-        let html = "<div>The Old Testament</div>"
-                    + "<div>The New Testament</div>"
-                    + "<div>The Book of Mormon</div>"
-                    + "<div>Doctrine and Covenants</div>"
-                    + "<div>The Pearl of Great Price</div>"
-                    + "<div>Selected volume: " + volumeId + "</div>";
+        let html = "<div>The Old Testament</div>" + "<div>The New Testament</div>" + "<div>The Book of Mormon</div>" + "<div>Doctrine and Covenants</div>" + "<div>The Pearl of Great Price</div>" + "<div>Selected volume: " + volumeId + "</div>";
 
         document.getElementById("scriptures").innerHTML = html;
     };
@@ -133,14 +128,14 @@ const Scriptures = (function () {
         }
         if (ids.length <= 0) {
             navigateHome();
-        } else if (ids.length === 1){
+        } else if (ids.length === 1) {
             //Display single volume's table of contents
             volumeId = Number(ids[0]);
 
             if (volumeId < volumes[0].id || volumeId > volumes[volumes.length - 1].id) {
                 navigateHome();
             } else {
-                navigateHome(volumeId)
+                navigateHome(volumeId);
             }
         } else if (ids.length === 2) {
             // NEEDSWORK: display book's list of chapters
@@ -151,8 +146,7 @@ const Scriptures = (function () {
             } else {
                 navigateBook(bookId);
             }
-        }
-        else {
+        } else {
             //display chapter contents
             bookId = Number(ids[1]);
             chapter = Number(ids[2]);
@@ -173,6 +167,6 @@ const Scriptures = (function () {
         },
         onHashChanged(eventHandler) {
             onHashChanged(eventHandler);
-        },
+        }
     };
 }());
