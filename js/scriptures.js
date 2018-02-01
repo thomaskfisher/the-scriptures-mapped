@@ -111,7 +111,7 @@ const Scriptures = (function () {
         document.getElementById("scriptures").innerHTML = data;
     };
 
-    getScriptureFailed = function() {
+    getScriptureFailed = function () {
         console.log("Warning: scripture request from server failed");
     };
 
@@ -149,19 +149,20 @@ const Scriptures = (function () {
 
     navigateChapter = function (bookId, chapter) {
         if (bookId !== undefined) {
-                // let book = books[bookId];
-                // let volume = volumes[book.parentBookid - 1];
+            // let book = books[bookId];
+            // let volume = volumes[book.parentBookid - 1];
 
-                //NEEDSWORK: this is great place to insert next/prev nav buttons
+            //NEEDSWORK: this is great place to insert next/prev nav buttons
 
-                console.log("Next chapter: " + nextChapter(bookId, chapter));
+            console.log("Next chapter: " + nextChapter(bookId, chapter));
+            console.log("Previous chapter: " + previousChapter(bookId, chapter));
 
-                ajax(
-                    encodedScriptureUrlParameters(bookId, chapter),
-                    getScriptureCallback,
-                    getScriptureFailed,
-                    true
-                );
+            ajax(
+                encodedScriptureUrlParameters(bookId, chapter),
+                getScriptureCallback,
+                getScriptureFailed,
+                true
+            );
         }
     };
 
@@ -169,7 +170,7 @@ const Scriptures = (function () {
         let navContents = "<div id=\"scriptnav\">";
 
         volumes.forEach(function (volume) {
-            if(volumeId === undefined || volume.id === volumeId) {
+            if (volumeId === undefined || volume.id === volumeId) {
                 navContents += "<div class=\"volume\"><a name=\"v" + volume.id + "\" /><h5>" + volume.fullName + "</h5></div><div class=\"books\">";
 
                 volume.books.forEach(function (book) {
@@ -187,7 +188,7 @@ const Scriptures = (function () {
 
         if (book !== undefined) {
             if (chapter < book.numChapters) {
-                return [bookId, chapter + 1, titleForBookChapter(book, chapter+1)];
+                return [bookId, chapter + 1, titleForBookChapter(book, chapter + 1)];
             }
 
             let nextBook = books[bookId + 1];
@@ -198,7 +199,7 @@ const Scriptures = (function () {
                     nextChapterValue = 1;
                 }
 
-                return [nextBook.id, nextChapterValue, titleForBookChapter(nextBook, nextChapterValue)]
+                return [nextBook.id, nextChapterValue, titleForBookChapter(nextBook, nextChapterValue)];
             }
         }
     };
@@ -256,6 +257,20 @@ const Scriptures = (function () {
                     return bookId - 1, the last chapter of that book and the title string for that book/chapter combo
         If we didnt already return a 3-element array of bookId/chapter/title at this point just drop through the bottom of the function. we'll return undevined by default meaning there is no previous chapter
         */
+        let book = books[bookId];
+
+        if (book !== undefined) {
+            if (chapter > 1) {
+                return [bookId, chapter - 1, titleForBookChapter(book, chapter - 1)];
+            }
+
+            let prevBook = books[bookId - 1];
+            if (prevBook !== undefined) {
+                let prevChapterValue = prevBook.numChapters;
+
+                return [prevBook.id, prevChapterValue, titleForBookChapter(prevBook, prevChapterValue)];
+            }
+        }
     };
 
     titleForBookChapter = function (book, chapter) {
