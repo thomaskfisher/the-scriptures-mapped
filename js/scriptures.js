@@ -30,6 +30,7 @@ const Scriptures = (function () {
     let nextChapter;
     let onHashChanged;
     let previousChapter;
+    let titleForBookChapter;
 
     //------------------------------------------------------------------------------------------------------
     //                              PRIVATE METHODS
@@ -148,12 +149,19 @@ const Scriptures = (function () {
 
     navigateChapter = function (bookId, chapter) {
         if (bookId !== undefined) {
-                let book = books[bookId];
-                let volume = volumes[book.parentBookid - 1];
+                // let book = books[bookId];
+                // let volume = volumes[book.parentBookid - 1];
 
                 //NEEDSWORK: this is great place to insert next/prev nav buttons
 
-                ajax(encodedScriptureUrlParameters(bookId, chapter), getScriptureCallback, getScriptureFailed, true);
+                console.log("Next chapter: " + nextChapter(bookId, chapter));
+
+                ajax(
+                    encodedScriptureUrlParameters(bookId, chapter),
+                    getScriptureCallback,
+                    getScriptureFailed,
+                    true
+                );
         }
     };
 
@@ -172,6 +180,27 @@ const Scriptures = (function () {
         });
         navContents += "<br /><br /></div>";
         document.getElementById("scriptures").innerHTML = navContents;
+    };
+
+    nextChapter = function (bookId, chapter) {
+        let book = books[bookId];
+
+        if (book !== undefined) {
+            if (chapter < book.numChapters) {
+                return [bookId, chapter + 1, titleForBookChapter(book, chapter+1)];
+            }
+
+            let nextBook = books[bookId + 1];
+            if (nextBook !== undefined) {
+                let nextChapterValue = 0;
+
+                if (nextBook.numChapters > 0) {
+                    nextChapterValue = 1;
+                }
+
+                return [nextBook.id, nextChapterValue, titleForBookChapter(nextBook, nextChapterValue)]
+            }
+        }
     };
 
     onHashChanged = function () {
@@ -215,6 +244,22 @@ const Scriptures = (function () {
                 navigateChapter(bookId, chapter);
             }
         }
+    };
+
+    previousChapter = function (bookId, chapter) {
+        /*
+        Get the book for the given bookid. if its not undefined:
+            if chapter > 1, its the easy case, just return the same bookid
+                chapter - 1, and the title string for that book/chapter combo
+            otherwise we need to see if theres a previous book:
+                get the book for the bookId - 1. if its not undefined:
+                    return bookId - 1, the last chapter of that book and the title string for that book/chapter combo
+        If we didnt already return a 3-element array of bookId/chapter/title at this point just drop through the bottom of the function. we'll return undevined by default meaning there is no previous chapter
+        */
+    };
+
+    titleForBookChapter = function (book, chapter) {
+        return book.tocName + (chapter > 0 ? " " + chapter : "");
     };
 
     //------------------------------------------------------------------------------------------------------
