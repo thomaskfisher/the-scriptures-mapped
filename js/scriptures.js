@@ -6,6 +6,7 @@ const Scriptures = (function () {
     // ------------------------------------------------------------------------------------------------------
     //                                      CONSTANTS
     //
+    const SCRIPTURES_URL = "http://scriptures.byu.edu/mapscrip/mapgetscrip.php";
 
     //------------------------------------------------------------------------------------------------------
     //                              PRIVATE VARIABLES
@@ -19,22 +20,33 @@ const Scriptures = (function () {
     let ajax;
     let bookChapterValid;
     let cacheBooks;
+    let encodedScriptureUrlParameters;
+    let getScriptureCallback;
+    let getScriptureFailed;
     let init;
     let navigateBook;
     let navigateChapter;
     let navigateHome;
+    let nextChapter;
     let onHashChanged;
+    let previousChapter;
 
     //------------------------------------------------------------------------------------------------------
     //                              PRIVATE METHODS
     //
-    ajax = function (url, successCallback, failureCallback) {
+    ajax = function (url, successCallback, failureCallback, skipParse) {
         let request = new XMLHttpRequest();
         request.open("GET", url, true);
 
         request.onload = function () {
             if (request.status >= 200 && request.status < 400) {
-                let data = JSON.parse(request.responseText);
+                let data;
+
+                if (skipParse) {
+                    data = request.responseText;
+                } else {
+                    data = JSON.parse(request.responseText);
+                }
 
                 if (typeof successCallback === "function") {
                     successCallback(data);
@@ -80,6 +92,28 @@ const Scriptures = (function () {
         }
     };
 
+    encodedScriptureUrlParameters = function (bookId, chapter, verses, isJst) {
+        let options = "";
+
+        if (bookId !== undefined && chapter !== undefined) {
+            if (verses !== undefined) {
+                options += verses;
+            }
+            if (isJst !== undefined && isJst) {
+                options += "&jst=JST";
+            }
+            return SCRIPTURES_URL + "?book=" + bookId + "&chap=" + chapter + "&verses" + options;
+        }
+    };
+
+    getScriptureCallback = function (data) {
+        document.getElementById("scriptures").innerHTML = data;
+    };
+
+    getScriptureFailed = function() {
+        console.log("Warning: scripture request from server failed");
+    };
+
     init = function (callback) {
         let booksLoaded = false;
         let volumesLoaded = false;
@@ -113,7 +147,14 @@ const Scriptures = (function () {
     };
 
     navigateChapter = function (bookId, chapter) {
-        document.getElementById("scriptures").innerHTML = "<div>" + bookId + ", " + chapter + "</div>";
+        if (bookId !== undefined) {
+                let book = books[bookId];
+                let volume = volumes[book.parentBookid - 1];
+
+                //NEEDSWORK: this is great place to insert next/prev nav buttons
+
+                ajax(encodedScriptureUrlParameters(bookId, chapter), getScriptureCallback, getScriptureFailed, true);
+        }
     };
 
     navigateHome = function (volumeId) {
