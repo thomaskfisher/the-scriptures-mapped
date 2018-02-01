@@ -117,10 +117,20 @@ const Scriptures = (function () {
     };
 
     navigateHome = function (volumeId) {
-        //NEEDSWORK: if volumenID is set, display just that volume
-        let html = "<div>The Old Testament</div>" + "<div>The New Testament</div>" + "<div>The Book of Mormon</div>" + "<div>Doctrine and Covenants</div>" + "<div>The Pearl of Great Price</div>" + "<div>Selected volume: " + volumeId + "</div>";
+        let navContents = "<div id=\"scriptnav\">";
 
-        document.getElementById("scriptures").innerHTML = html;
+        volumes.forEach(function (volume) {
+            if(volumeId === undefined || volume.id === volumeId) {
+                navContents += "<div class=\"volume\"><a name=\"v" + volume.id + "\" /><h5>" + volume.fullName + "</h5></div><div class=\"books\">";
+
+                volume.books.forEach(function (book) {
+                    navContents += "<a class=\"btn\" id=\"" + book.id + "\" href=\"#" + volume.id + ":" + book.id + "\">" + book.gridName + "</a>";
+                });
+                navContents += "</div>";
+            }
+        });
+        navContents += "<br /><br /></div>";
+        document.getElementById("scriptures").innerHTML = navContents;
     };
 
     onHashChanged = function () {
