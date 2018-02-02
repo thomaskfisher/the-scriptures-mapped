@@ -15,6 +15,7 @@ const Scriptures = (function () {
     //
     let books = {};
     let gmMarkers = [];
+    let requestedBreadcrumbs;
     let retryDelay = 500;
     let volumes = [];
 
@@ -24,11 +25,13 @@ const Scriptures = (function () {
     let addMarker;
     let ajax;
     let bookChapterValid;
+    let breadcrumbs;
     let cacheBooks;
     let clearMarkers;
     let encodedScriptureUrlParameters;
     let getScriptureCallback;
     let getScriptureFailed;
+    let hash;
     let init;
     let navigateBook;
     let navigateChapter;
@@ -96,6 +99,31 @@ const Scriptures = (function () {
         return true;
     };
 
+    breadcrumbs = function (volume, book, chapter) {
+        let crumbs;
+
+        if (volume === undefined) {
+            crumbs = "<ul><li>The Scriptures</li>";
+        } else {
+            crumbs = "<ul><li><a href=\"javascript:void(0);\" " + "onclick=\"Scriptures.hash()\">The Scriptures</a></li>";
+
+            if (book ===undefined) {
+                crumbs += "<li>" + volume.fullName + "</li>";
+            } else {
+                crumbs += "<li><a href=\"javascript:void(0);\" " + "onclick=\"Scriptures.hash(" + volume.id + ")\">" + volume.fullName + "</a></li>";
+
+                if (chapter === undefined || chapter <= 0) {
+                    crumbs += "<li>" + book.tocName + "</li>";
+                } else {
+                    crumbs += "<li><a href=\"javascript:void(0);\" " + "onclick=\"Scriptures.hash(0, " + book.id + ")\">" + book.tocName + "</a></li>";
+                    crumbs += "<li>" + chapter + "</li>";
+                }
+            }
+        }
+
+        return crumbs + "</ul>";
+    };
+
     cacheBooks = function (callback) {
         volumes.forEach(function (volume) {
             let volumeBooks = [];
@@ -138,10 +166,30 @@ const Scriptures = (function () {
     getScriptureCallback = function (chapterHtml) {
         document.getElementById("scriptures").innerHTML = chapterHtml;
         setupMarkers();
+        document.getElementById("crumb").innerHTML = requestedBreadcrumbs;
+        setupMarkers();
     };
 
     getScriptureFailed = function () {
         console.log("Warning: scripture request from server failed");
+    };
+
+    hash = function (volumeId, bookId, chapter) {
+        let newHash = "";
+
+        if (volumeId !== undefined) {
+            newHash += volumeId;
+
+            if (bookId !== undefined) {
+                newHash += ":" + bookId;
+
+                if (chapter !== undefined) {
+                    newHash += ":" + chapter;
+                }
+            }
+        }
+
+        location.hash = newHash;
     };
 
     init = function (callback) {
@@ -174,12 +222,38 @@ const Scriptures = (function () {
 
     navigateBook = function (bookId) {
         document.getElementById("scriptures").innerHTML = "<div>" + bookId + "</div>";
+
+        /*
+        NEEDSWORK: generate HTML that looks like this to use Liddle's styles
+
+        <div id="scripnav">
+            <div class="volume"><h5>book.fullName</h5></div>
+            <a class="btn chapter" id="1" href="#0:bookId:1">1</a>
+            <a class="btn chapter" id="2" href="#0:bookId:2">2</a>
+            ...
+            <a class="btn chapter" id="49" href="#0:bookId:49">49</a>
+            <a class="btn chapter" id="50" href="#0:bookId:50">50</a>
+        </div>
+
+        (plug in the right strings for book.fullName and bookId in the example above)
+
+        Logic for this method:
+        1. Get the book for the given bookId
+        2. If the book has no numbered chapters, call navigateChapter() for that book id and chapter 0
+        3. else if the book has exacly one chapter, call navigateChapter() for that book id and chapter 1
+        4. else generate the html to match the example above
+        */
+
+        //NEEDSWORK: also update the breadcrumbs here
+
     };
 
     navigateChapter = function (bookId, chapter) {
         if (bookId !== undefined) {
-            // let book = books[bookId];
-            // let volume = volumes[book.parentBookid - 1];
+            let book = books[bookId];
+            let volume = volumes[book.parentBookId - 1];
+
+            requestedBreadcrumbs = breadcrumbs(volume, book, chapter);
 
             //NEEDSWORK: this is great place to insert next/prev nav buttons
 
@@ -196,6 +270,7 @@ const Scriptures = (function () {
     };
 
     navigateHome = function (volumeId) {
+        let displayedVolume;
         let navContents = "<div id=\"scriptnav\">";
 
         volumes.forEach(function (volume) {
@@ -206,10 +281,15 @@ const Scriptures = (function () {
                     navContents += "<a class=\"btn\" id=\"" + book.id + "\" href=\"#" + volume.id + ":" + book.id + "\">" + book.gridName + "</a>";
                 });
                 navContents += "</div>";
+
+                if (volume.id == volumeId) {
+                    displayedVolume = volume;
+                }
             }
         });
         navContents += "<br /><br /></div>";
         document.getElementById("scriptures").innerHTML = navContents;
+        document.getElementById("crumb").innerHTML = breadcrumbs(displayedVolume);
     };
 
     nextChapter = function (bookId, chapter) {
@@ -351,6 +431,7 @@ const Scriptures = (function () {
     //                                      PUBLIC API
     //
     return {
+        hash : hash,
         init(callback) {
             init(callback);
         },
