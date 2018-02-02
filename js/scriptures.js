@@ -7,6 +7,7 @@ const Scriptures = (function () {
     //                                      CONSTANTS
     //
     const LAT_LON_PARSER = /\((.*),'(.*)',(.*),(.*),(.*),(.*),(.*),(.*),(.*),(.*),(.*)\)/;
+    const MAX_RETRY_DELAY = 5000;
     const SCRIPTURES_URL = "http://scriptures.byu.edu/mapscrip/mapgetscrip.php";
 
     //------------------------------------------------------------------------------------------------------
@@ -14,6 +15,7 @@ const Scriptures = (function () {
     //
     let books = {};
     let gmMarkers = [];
+    let retryDelay = 500;
     let volumes = [];
 
     //------------------------------------------------------------------------------------------------------
@@ -41,7 +43,16 @@ const Scriptures = (function () {
     //                              PRIVATE METHODS
     //
     addMarker = function (placename, latitude, longitude) {
-            //NEEDSWORK
+        //NEEDSWORK Chck to see if we already have a marker at this lat/long
+        // If so, merge the placename
+        let marker = new google.maps.Marker({
+            position: {lat: latitude, lng: longitude},
+            map: map,
+            title: placename,
+            animation: google.maps.Animation.DROP
+        });
+
+        gmMarkers.push(marker);
     };
 
     ajax = function (url, successCallback, failureCallback, skipParse) {
@@ -291,7 +302,18 @@ const Scriptures = (function () {
         }
     };
 
-    setupMarkers = function() {
+    setupMarkers = function () {
+        if (window.google === undefined) {
+            let retryId = window.setTimeout(setupMarkers, retryDelay);
+
+            retryDelay += retryDelay;
+
+            if (retryDelay > MAX_RETRY_DELAY) {
+                window.clearTimeout(retryId);
+            }
+            return;
+        }
+
         if (gmMarkers.length > 0) {
             clearMarkers();
         }
@@ -320,7 +342,9 @@ const Scriptures = (function () {
     };
 
     titleForBookChapter = function (book, chapter) {
-        return book.tocName + (chapter > 0 ? " " + chapter : "");
+        return book.tocName + (chapter > 0
+            ? " " + chapter
+            : "");
     };
 
     //------------------------------------------------------------------------------------------------------
