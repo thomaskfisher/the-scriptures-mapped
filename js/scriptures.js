@@ -6,20 +6,24 @@ const Scriptures = (function () {
     // ------------------------------------------------------------------------------------------------------
     //                                      CONSTANTS
     //
+    const LAT_LON_PARSER = /\((.*),'(.*)',(.*),(.*),(.*),(.*),(.*),(.*),(.*),(.*),(.*)\)/;
     const SCRIPTURES_URL = "http://scriptures.byu.edu/mapscrip/mapgetscrip.php";
 
     //------------------------------------------------------------------------------------------------------
     //                              PRIVATE VARIABLES
     //
     let books = {};
+    let gmMarkers = [];
     let volumes = [];
 
     //------------------------------------------------------------------------------------------------------
     //                  PRIVATE METHOD DECLARATIONS
     //
+    let addMarker;
     let ajax;
     let bookChapterValid;
     let cacheBooks;
+    let clearMarkers;
     let encodedScriptureUrlParameters;
     let getScriptureCallback;
     let getScriptureFailed;
@@ -30,11 +34,16 @@ const Scriptures = (function () {
     let nextChapter;
     let onHashChanged;
     let previousChapter;
+    let setupMarkers;
     let titleForBookChapter;
 
     //------------------------------------------------------------------------------------------------------
     //                              PRIVATE METHODS
     //
+    addMarker = function (placename, latitude, longitude) {
+            //NEEDSWORK
+    };
+
     ajax = function (url, successCallback, failureCallback, skipParse) {
         let request = new XMLHttpRequest();
         request.open("GET", url, true);
@@ -93,6 +102,14 @@ const Scriptures = (function () {
         }
     };
 
+    clearMarkers = function () {
+        gmMarkers.forEach(function (marker) {
+            marker.setMap(null);
+        });
+
+        gmMarkers = [];
+    };
+
     encodedScriptureUrlParameters = function (bookId, chapter, verses, isJst) {
         let options = "";
 
@@ -107,8 +124,9 @@ const Scriptures = (function () {
         }
     };
 
-    getScriptureCallback = function (data) {
-        document.getElementById("scriptures").innerHTML = data;
+    getScriptureCallback = function (chapterHtml) {
+        document.getElementById("scriptures").innerHTML = chapterHtml;
+        setupMarkers();
     };
 
     getScriptureFailed = function () {
@@ -271,6 +289,34 @@ const Scriptures = (function () {
                 return [prevBook.id, prevChapterValue, titleForBookChapter(prevBook, prevChapterValue)];
             }
         }
+    };
+
+    setupMarkers = function() {
+        if (gmMarkers.length > 0) {
+            clearMarkers();
+        }
+
+        let matches;
+
+        document.querySelectorAll("a[onclick^=\"showLocation(\"]").forEach(function (element) {
+            let value = element.getAttribute("onclick");
+
+            matches = LAT_LON_PARSER.exec(value);
+
+            if (matches) {
+                let placename = matches[2];
+                let latitude = Number(matches[3]);
+                let longitude = Number(matches[4]);
+                let flag = matches[11].substring(1);
+
+                flag = flag.substring(0, flag.length - 1);
+                if (flag !== "") {
+                    placename += " " + flag;
+                }
+
+                addMarker(placename, latitude, longitude);
+            }
+        });
     };
 
     titleForBookChapter = function (book, chapter) {
