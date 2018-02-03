@@ -165,8 +165,10 @@ const Scriptures = (function () {
 
     getScriptureCallback = function (chapterHtml) {
         document.getElementById("scriptures").innerHTML = chapterHtml;
+        clearMarkers();
         setupMarkers();
         document.getElementById("crumb").innerHTML = requestedBreadcrumbs;
+        clearMarkers();
         setupMarkers();
     };
 
@@ -229,18 +231,21 @@ const Scriptures = (function () {
 
             if (book.numChapters === 0) {
                 navigateChapter(bookId, 0);
+
             } else if (book.numChapters === 1) {
                 navigateChapter(bookId, 1);
+
             } else {
-                let html = "<div id=\"scripnav\"><div class=\"volume\"><h5>" + book.fullName + "</h5></div>";
+                let html = "<div id=\"scripnav\"><div class=\"volume\"><h5>" + book.fullName + "</h5></div><div id=\"test\">";
 
                 for (var i = 0; i < book.numChapters; i++) {
                     html += "<a class=\"btn chapter\" id=\"" + (i + 1) + "\" href=\"#0:" + bookId + ":" + (i+1) + "\">" + (i+1) + "</a>";
                 }
 
-                html += "</div>";
+                html += "</div></div>";
                 document.getElementById("scriptures").innerHTML = html;
                 document.getElementById("crumb").innerHTML = breadcrumbs(volume, book);
+
             }
         }
         /*
@@ -263,18 +268,12 @@ const Scriptures = (function () {
         3. else if the book has exacly one chapter, call navigateChapter() for that book id and chapter 1
         4. else generate the html to match the example above
         */
-
-        //NEEDSWORK: also update the breadcrumbs here
-        //requestedBreadcrumbs = breadcrumbs(volume, book, chapter);
-
-
     };
 
     navigateChapter = function (bookId, chapter) {
         if (bookId !== undefined) {
             let book = books[bookId];
             let volume = volumes[book.parentBookId - 1];
-
             requestedBreadcrumbs = breadcrumbs(volume, book, chapter);
 
             //NEEDSWORK: this is great place to insert next/prev nav buttons
@@ -282,9 +281,12 @@ const Scriptures = (function () {
             //console.log("Next chapter: " + nextChapter(bookId, chapter));
             //console.log("Previous chapter: " + previousChapter(bookId, chapter));
             let test = previousChapter(bookId, chapter)
-            //console.log((''+test[0])[1]);
+            console.log(bookId);
+            console.log(volume.id);
 
-            // document.getElementById("navButtons").innerHTML = "<ul><li><a href=\"javascript:void(0);\" " + "onclick=\"" + Scriptures.hash((''+test[0])[1],test[0],test[1]) + "\">Previous</a></li><li><a href=\"javascript:void(0);\" " + "onclick=\"" + nextChapter(bookId, chapter) + "\">Next</a></li></ul>";
+            // document.getElementById("scripnav").innerHTML = "<ul><li>Previous</li><li>Next</li></ul><br />";
+
+            // document.getElementById("scripnav").innerHTML = "<ul><li><a href=\"javascript:void(0);\" " + "onclick=\"" + Scriptures.hash((''+test[0])[1],test[0],test[1]) + "\">Previous</a></li><li><a href=\"javascript:void(0);\" " + "onclick=\"" + nextChapter(bookId, chapter) + "\">Next</a></li></ul>";
 
             //NEEDSWORK: this is great place to insert next/prev nav buttons
 

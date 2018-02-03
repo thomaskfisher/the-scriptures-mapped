@@ -1,3 +1,24 @@
+a.chapter {
+    flex: 0 0 7em;
+    font-weight: normal;
+    margin: .4em;
+    padding-left: .5em;
+    padding-right: .5em;
+    background-color: #fff;
+    color: #222;
+}
+
+#test {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 .3em;
+    margin: 0;
+}
+
+/* ----------------------------------------- */
+
 html {
     width: 100%;
     height: 100%;
