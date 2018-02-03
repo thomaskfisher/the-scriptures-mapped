@@ -17,6 +17,7 @@
         </div>
     </div>
     <div id="content">
+        <div id="navButtons"></div>
         <div id="scriptures"></div>
         <div id="map"></div>
     </div>
@@ -38,11 +39,11 @@
 
         function initMap() {
             let uluru = {
-                lat: -25.363,
-                lng: 131.044
+                lat: 31.7683,
+                lng: 35.2137
             };
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 4,
+                zoom: 7,
                 center: uluru
             });
             let marker = new google.maps.Marker({

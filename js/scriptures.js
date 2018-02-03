@@ -107,7 +107,7 @@ const Scriptures = (function () {
         } else {
             crumbs = "<ul><li><a href=\"javascript:void(0);\" " + "onclick=\"Scriptures.hash()\">The Scriptures</a></li>";
 
-            if (book ===undefined) {
+            if (book === undefined) {
                 crumbs += "<li>" + volume.fullName + "</li>";
             } else {
                 crumbs += "<li><a href=\"javascript:void(0);\" " + "onclick=\"Scriptures.hash(" + volume.id + ")\">" + volume.fullName + "</a></li>";
@@ -223,6 +223,26 @@ const Scriptures = (function () {
     navigateBook = function (bookId) {
         document.getElementById("scriptures").innerHTML = "<div>" + bookId + "</div>";
 
+        if (bookId !== undefined) {
+            let book = books[bookId];
+            let volume = volumes[book.parentBookId - 1];
+
+            if (book.numChapters === 0) {
+                navigateChapter(bookId, 0);
+            } else if (book.numChapters === 1) {
+                navigateChapter(bookId, 1);
+            } else {
+                let html = "<div id=\"scripnav\"><div class=\"volume\"><h5>" + book.fullName + "</h5></div>";
+
+                for (var i = 0; i < book.numChapters; i++) {
+                    html += "<a class=\"btn chapter\" id=\"" + (i + 1) + "\" href=\"#0:" + bookId + ":" + (i+1) + "\">" + (i+1) + "</a>";
+                }
+
+                html += "</div>";
+                document.getElementById("scriptures").innerHTML = html;
+                document.getElementById("crumb").innerHTML = breadcrumbs(volume, book);
+            }
+        }
         /*
         NEEDSWORK: generate HTML that looks like this to use Liddle's styles
 
@@ -245,6 +265,8 @@ const Scriptures = (function () {
         */
 
         //NEEDSWORK: also update the breadcrumbs here
+        //requestedBreadcrumbs = breadcrumbs(volume, book, chapter);
+
 
     };
 
@@ -257,8 +279,14 @@ const Scriptures = (function () {
 
             //NEEDSWORK: this is great place to insert next/prev nav buttons
 
-            console.log("Next chapter: " + nextChapter(bookId, chapter));
-            console.log("Previous chapter: " + previousChapter(bookId, chapter));
+            //console.log("Next chapter: " + nextChapter(bookId, chapter));
+            //console.log("Previous chapter: " + previousChapter(bookId, chapter));
+            let test = previousChapter(bookId, chapter)
+            //console.log((''+test[0])[1]);
+
+            // document.getElementById("navButtons").innerHTML = "<ul><li><a href=\"javascript:void(0);\" " + "onclick=\"" + Scriptures.hash((''+test[0])[1],test[0],test[1]) + "\">Previous</a></li><li><a href=\"javascript:void(0);\" " + "onclick=\"" + nextChapter(bookId, chapter) + "\">Next</a></li></ul>";
+
+            //NEEDSWORK: this is great place to insert next/prev nav buttons
 
             ajax(
                 encodedScriptureUrlParameters(bookId, chapter),
@@ -282,7 +310,7 @@ const Scriptures = (function () {
                 });
                 navContents += "</div>";
 
-                if (volume.id == volumeId) {
+                if (volume.id === volumeId) {
                     displayedVolume = volume;
                 }
             }
@@ -431,7 +459,7 @@ const Scriptures = (function () {
     //                                      PUBLIC API
     //
     return {
-        hash : hash,
+        hash: hash,
         init(callback) {
             init(callback);
         },
