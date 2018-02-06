@@ -48,21 +48,28 @@
         });
 
         let map;
+
         function initMap() {
-            let uluru = {
-                lat: 31.7683,
-                lng: 35.2137
-            };
+            // Create a map object and specify the DOM element for display.
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 7,
-                center: uluru,
-                mapTypeControl: false
+              center: {lat: 31.7683, lng: 35.2137},
+              zoom: 8
             });
-            let marker = new google.maps.Marker({
-                position: uluru,
-                map: map,
-                // label: "test"
-            });
+
+            // let uluru = {
+            //     lat: 31.7683,
+            //     lng: 35.2137
+            // };
+            // map = new google.maps.Map(document.getElementById('map'), {
+            //     zoom: 7,
+            //     center: uluru,
+            //     mapTypeControl: false
+            // });
+            // let marker = new google.maps.Marker({
+            //     position: uluru,
+            //     map: map,
+            //     // label: "test"
+            // });
             // Add controls to the map, allowing users to hide/show features.
             var styleControl = document.getElementById('style-selector-control');
             map.controls[google.maps.ControlPosition.TOP_LEFT].push(styleControl);

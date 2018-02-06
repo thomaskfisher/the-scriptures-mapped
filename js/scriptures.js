@@ -4,7 +4,7 @@
 let showLocation;
 showLocation = function (geotagId, placename, latitude, longitude, viewLatitude, viewLongitude, viewTilt, viewRoll, viewAltitude, viewHeading) {
     Scriptures.showLocation(geotagId, placename, latitude, longitude, viewLatitude, viewLongitude, viewTilt, viewRoll, viewAltitude, viewHeading);
-}
+};
 
 const Scriptures = (function () {
     "use strict";
@@ -45,7 +45,7 @@ const Scriptures = (function () {
     let onHashChanged;
     let previousChapter;
     let setupMarkers;
-    let showLocation;
+    // let showLocation;
     let titleForBookChapter;
 
     //------------------------------------------------------------------------------------------------------
@@ -58,11 +58,12 @@ const Scriptures = (function () {
             position: {lat: latitude, lng: longitude},
             map: map,
             title: placename,
-            // title: "TESLA",
             animation: google.maps.Animation.DROP
         });
 
         gmMarkers.push(marker);
+
+        return marker;
     };
 
     ajax = function (url, successCallback, failureCallback, skipParse) {
@@ -200,9 +201,6 @@ const Scriptures = (function () {
 
 
     hash = function (volumeId, bookId, chapter) {
-        console.log(volumeId);
-        console.log(bookId);
-        console.log(chapter);
         let newHash = "";
 
         if (volumeId !== undefined) {
@@ -268,7 +266,7 @@ const Scriptures = (function () {
             } else {
                 let html = "<div id=\"scripnav\"><div class=\"volume\"><h5>" + book.fullName + "</h5></div><div id=\"test\">";
 
-                for (var i = 0; i < book.numChapters; i++) {
+                for(var i = 0; i < book.numChapters; i++) {
                     html += "<a class=\"btn chapter\" id=\"" + (i + 1) + "\" href=\"#0:" + bookId + ":" + (i+1) + "\">" + (i+1) + "</a>";
                 }
 
@@ -317,14 +315,14 @@ const Scriptures = (function () {
 
             html = "<button id=\"prev_button\" href=\"javascript:void(0);\">Prev</button> <button id=\"next_button\" href=\"javascript:void(0);\">Next</button>"
 
-            document.getElementById('navbtns').innerHTML = html;
+            document.getElementById("navbtns").innerHTML = html;
 
-            document.getElementById('next_button').addEventListener("click", function() {
+            document.getElementById("next_button").addEventListener("click", function() {
                 let next = nextChapter(bookId, chapter);
                 Scriptures.hash(next[0], next[1], next[2]);
             });
 
-            document.getElementById('prev_button').addEventListener("click", function() {
+            document.getElementById("prev_button").addEventListener("click", function() {
                 let prev = previousChapter(bookId, chapter);
                 Scriptures.hash(prev[0], prev[1], prev[2]);
             });
@@ -492,6 +490,7 @@ const Scriptures = (function () {
         }
 
         let matches;
+        let mark;
 
         document.querySelectorAll("a[onclick^=\"showLocation(\"]").forEach(function (element) {
             let value = element.getAttribute("onclick");
@@ -509,9 +508,25 @@ const Scriptures = (function () {
                     placename += " " + flag;
                 }
 
-                addMarker(placename, latitude, longitude);
+                mark = addMarker(placename, latitude, longitude);
             }
         });
+
+        console.log(gmMarkers.length);
+        if(gmMarkers.length === 0) {
+
+        }
+        if(gmMarkers.length === 1) {
+            map.setZoom(8);
+            map.panTo(mark.position);
+        }
+        else if (gmMarkers.length > 1){
+            let bounds = new google.maps.LatLngBounds();
+            for (var i = 0; i < gmMarkers.length; i++) {
+                bounds.extend(gmMarkers[i].getPosition());
+            }
+            map.fitBounds(bounds);
+        }
     };
 
 
@@ -521,7 +536,7 @@ const Scriptures = (function () {
 
         // using global variable:
         map.panTo(center);
-        // console.log("IT WORKED!");
+        map.setZoom(12);
     };
 
 
