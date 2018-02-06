@@ -61,7 +61,16 @@ const Scriptures = (function () {
             animation: google.maps.Animation.DROP
         });
 
+        let contentString = placename;
+
+        let infowindow = new google.maps.InfoWindow({
+            content: contentString,
+            position: new google.maps.LatLng(latitude,longitude)
+        });
+
         gmMarkers.push(marker);
+
+        infowindow.open(map, marker);
 
         return marker;
     };
