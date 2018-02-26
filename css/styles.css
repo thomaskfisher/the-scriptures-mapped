@@ -4,10 +4,19 @@ a.chapter {
     margin: .4em;
     padding-left: .5em;
     padding-right: .5em;
-    background-color: #fff;
-    color: #222;
+    /* background-color: #fff; */
+    /* background-color: red;
+    color: #222; */
+    -webkit-border-radius: 7;
+    -moz-border-radius: 7;
+    border-radius: 7px;
+    color: #ffffff;
+    background: #7371FC;
+    padding: 5px 10px 5px 10px;
+    text-decoration: none;
 }
 
+/* Has something to do with chapter lists? */
 #test {
     display: flex;
     flex-direction: row;
@@ -15,6 +24,43 @@ a.chapter {
     justify-content: center;
     padding: 0 .3em;
     margin: 0;
+}
+
+#flex_test {
+    min-width: 220px;
+    max-width: 440px;
+    flex: 1 1 30%;
+    height: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-right: 1px solid #aaa;
+    position: relative;
+}
+
+#navbtns {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+}
+
+#navbtns button {
+    flex: 0 0 7em;
+    flex-grow: 1;
+    font-weight: normal;
+    margin: .4em;
+    padding-left: .5em;
+    padding-right: .5em;
+    /* background-color: #fff; */
+    /* background-color: red;
+    color: #222; */
+    -webkit-border-radius: 7;
+    -moz-border-radius: 7;
+    border-radius: 7px;
+    color: #ffffff;
+    background: #7371FC;
+    padding: 5px 10px 5px 10px;
+    text-decoration: none;
 }
 
 /* ----------------------------------------- */
@@ -27,7 +73,7 @@ html {
 
 body {
     color: #222;
-    background-color: rgb(236,226,217);
+    background-color: #E0E0E0;
     margin: 0;
     padding: 0;
     min-height: 100%;
@@ -44,7 +90,7 @@ img {
     top: 0;
     left: 0;
     right: 0;
-    background-color: #3f2000;
+    background-color: #373737;
     color: white;
     height: 56px;
     display: flex;
@@ -141,8 +187,17 @@ div.books a {
     margin: .4em;
     padding-left: .5em;
     padding-right: .5em;
-    background-color: #fff;
-    color: #222;
+    /* background-color: #fff; */
+    /* background-color: purple; */
+    /* color: #222; */
+
+    -webkit-border-radius: 7;
+    -moz-border-radius: 7;
+    border-radius: 7px;
+    color: #ffffff;
+    background: #7371FC;
+    padding: 5px 10px 5px 10px;
+    text-decoration: none;
 }
 
 div.books a.chapter {

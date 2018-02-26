@@ -262,6 +262,8 @@ const Scriptures = (function () {
     navigateBook = function (bookId) {
         document.getElementById("scriptures").innerHTML = "<div>" + bookId + "</div>";
 
+        document.getElementById("navbtns").innerHTML = "";
+
         if (bookId !== undefined) {
             let book = books[bookId];
             let volume = volumes[book.parentBookId - 1];
@@ -356,6 +358,8 @@ const Scriptures = (function () {
     navigateHome = function (volumeId) {
         let displayedVolume;
         let navContents = "<div id=\"scriptnav\">";
+
+        document.getElementById("navbtns").innerHTML = "";
 
         volumes.forEach(function (volume) {
             if (volumeId === undefined || volume.id === volumeId) {
