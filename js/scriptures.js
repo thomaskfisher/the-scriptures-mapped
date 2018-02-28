@@ -177,7 +177,7 @@ const Scriptures = (function () {
 
 
     encodedScriptureUrlParameters = function (bookId, chapter, verses, isJst) {
-        $('#scriptures').hide();
+        // $('#scriptures').hide();
         let options = "";
 
         if (bookId !== undefined && chapter !== undefined) {
@@ -187,7 +187,7 @@ const Scriptures = (function () {
             if (isJst !== undefined && isJst) {
                 options += "&jst=JST";
             }
-            $('#scriptures').fadeIn(500);
+            // $('#scriptures').fadeIn(500);
             return SCRIPTURES_URL + "?book=" + bookId + "&chap=" + chapter + "&verses" + options;
         }
     };
@@ -393,6 +393,7 @@ const Scriptures = (function () {
 
 
     nextChapter = function (bookId, chapter) {
+        nextSlide();
         let book = books[bookId];
         let volume = volumes[book.parentBookId - 1];
 
@@ -414,6 +415,19 @@ const Scriptures = (function () {
                 return [volume.id, nextBook.id, nextChapterValue];
             }
         }
+    };
+
+
+
+    function nextSlide() {
+        // $("#scriptures").animate({ left: -$("#scriptures").width() });
+        // $("#scriptures").animate({ left:  $("#scriptures").width()});
+
+        $("#scriptures").animate({ left: -$("#scriptures").width() });
+        $("#scriptures").fadeTo(1, 0);
+        $("#scriptures").animate( {left:  $("#scriptures").width()}, {duration: 1});
+        $("#scriptures").fadeTo(1, 1);
+        $("#scriptures").animate({ left: -($("#scriptures").width()-$("#scriptures").width()) });
     };
 
 
@@ -464,6 +478,7 @@ const Scriptures = (function () {
 
 
     previousChapter = function (bookId, chapter) {
+        previousSlide();
         /*
         Get the book for the given bookid. if its not undefined:
             if chapter > 1, its the easy case, just return the same bookid
@@ -492,6 +507,16 @@ const Scriptures = (function () {
                 return [volume.id, prevBook.id, prevChapterValue];
             }
         }
+    };
+
+
+
+    function previousSlide() {
+        $("#scriptures").animate({ left: $("#scriptures").width() });
+        $("#scriptures").fadeTo(1, 0);
+        $("#scriptures").animate( {left:  -$("#scriptures").width()}, {duration: 1});
+        $("#scriptures").fadeTo(1, 1);
+        $("#scriptures").animate({ left: $("#scriptures").width()-$("#scriptures").width() });
     };
 
 
@@ -527,9 +552,9 @@ const Scriptures = (function () {
                 let flag = matches[11].substring(1);
 
                 flag = flag.substring(0, flag.length - 1);
-                if (flag !== "") {
-                    placename += " " + flag;
-                }
+                // if (flag !== "") {
+                //     placename += " " + flag;
+                // }
 
                 mark = addMarker(placename, latitude, longitude);
             }
