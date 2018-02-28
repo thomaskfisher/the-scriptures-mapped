@@ -4,9 +4,6 @@ a.chapter {
     margin: .4em;
     padding-left: .5em;
     padding-right: .5em;
-    /* background-color: #fff; */
-    /* background-color: red;
-    color: #222; */
     -webkit-border-radius: 7;
     -moz-border-radius: 7;
     border-radius: 7px;
@@ -17,7 +14,7 @@ a.chapter {
 }
 
 /* Has something to do with chapter lists? */
-#test {
+#makeChaptersLookNice {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -26,7 +23,7 @@ a.chapter {
     margin: 0;
 }
 
-#flex_test {
+#scriptureAndButtonContainer {
     min-width: 220px;
     max-width: 440px;
     flex: 1 1 30%;
@@ -63,7 +60,7 @@ a.chapter {
     text-decoration: none;
 }
 
-/* ----------------------------------------- */
+/* -----------------END OF MY STYLES------------------------ */
 
 html {
     width: 100%;
@@ -109,7 +106,7 @@ img {
     overflow-x: hidden;
     overflow-y: auto;
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     align-content: stretch;
 }
 
@@ -346,4 +343,43 @@ span.verse {
 
 li.match {
     background-color: #ffffcc;
+}
+
+
+
+
+
+/* @media all and (max-width: 640px) { */
+@media all and (max-width: 858px) {
+    #content {
+        flex-direction: column;
+        max-height: 100%;
+        /* overflow:auto; */
+    }
+    #content > #map {
+        order: 0;
+        width: 100%;
+        height: 400px;
+    }
+
+    div #scriptures {
+        min-width: 100%;
+        max-width: 100%;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 100%;
+
+    }
+
+    div #map {
+        max-height: 400px;
+        min-height: 400px;
+        /* overflow: visible !important; */
+    }
+
+
+    #scriptureAndButtonContainer {
+        min-width: 100%;
+        max-width: 100%;
+    }
 }

@@ -275,7 +275,7 @@ const Scriptures = (function () {
                 navigateChapter(bookId, 1);
 
             } else {
-                let html = "<div id=\"scripnav\"><div class=\"volume\"><h5>" + book.fullName + "</h5></div><div id=\"test\">";
+                let html = "<div id=\"scripnav\"><div class=\"volume\"><h5>" + book.fullName + "</h5></div><div id=\"makeChaptersLookNice\">";
 
                 for(var i = 0; i < book.numChapters; i++) {
                     html += "<a class=\"btn chapter\" id=\"" + (i + 1) + "\" href=\"#0:" + bookId + ":" + (i+1) + "\">" + (i+1) + "</a>";
