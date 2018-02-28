@@ -177,6 +177,7 @@ const Scriptures = (function () {
 
 
     encodedScriptureUrlParameters = function (bookId, chapter, verses, isJst) {
+        $('#scriptures').hide();
         let options = "";
 
         if (bookId !== undefined && chapter !== undefined) {
@@ -186,6 +187,7 @@ const Scriptures = (function () {
             if (isJst !== undefined && isJst) {
                 options += "&jst=JST";
             }
+            $('#scriptures').fadeIn(500);
             return SCRIPTURES_URL + "?book=" + bookId + "&chap=" + chapter + "&verses" + options;
         }
     };
@@ -260,6 +262,7 @@ const Scriptures = (function () {
 
 
     navigateBook = function (bookId) {
+        $('#scriptures').hide();
         document.getElementById("scriptures").innerHTML = "<div>" + bookId + "</div>";
 
         document.getElementById("navbtns").innerHTML = "";
@@ -283,6 +286,7 @@ const Scriptures = (function () {
 
                 html += "</div></div>";
                 document.getElementById("scriptures").innerHTML = html;
+                $('#scriptures').fadeIn(500);
                 document.getElementById("crumb").innerHTML = breadcrumbs(volume, book);
 
             }
@@ -356,6 +360,7 @@ const Scriptures = (function () {
 
 
     navigateHome = function (volumeId) {
+        $('#scriptures').hide();
         let displayedVolume;
         let navContents = "<div id=\"scriptnav\">";
 
@@ -376,7 +381,12 @@ const Scriptures = (function () {
             }
         });
         navContents += "<br /><br /></div>";
+
+
+
         document.getElementById("scriptures").innerHTML = navContents;
+        $('#scriptures').fadeIn(500);
+
         document.getElementById("crumb").innerHTML = breadcrumbs(displayedVolume);
     };
 
